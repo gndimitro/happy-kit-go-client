@@ -30,6 +30,11 @@ type User struct {
 
 var featureFlags FeatureFlags
 
+// Returns the boolean value of the provided feature flag key
+//
+// featureFlagKey (string) Key to be used when fetching the feature flag
+//
+// defaultValueOptional (bool) Backup value to be used in case the feature flag isn't found in the current dataset
 func IsEnabled(featureFlagKey string, defaultValueOptional ...bool) bool {
 	defaultValue := false
 
@@ -45,7 +50,8 @@ func IsEnabled(featureFlagKey string, defaultValueOptional ...bool) bool {
 }
 
 // Fetches the feature flags from the api using the provided flags key
-// flagsKey (string): You can find the flag key for each stage in your project's settings on happykit.dev.
+// 
+// flagsKey (string): You can find the flag key for each stage in your project's settings on happykit.dev
 func FetchFeatureFlags(flagsKey string) bool {
 	response, err := http.Post(fmt.Sprintf("https://happykit.dev/api/flags/%s", flagsKey), "application/json", bytes.NewReader([]byte("")))
 
