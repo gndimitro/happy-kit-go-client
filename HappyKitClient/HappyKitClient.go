@@ -44,6 +44,8 @@ func IsEnabled(featureFlagKey string, defaultValueOptional ...bool) bool {
 	return defaultValue
 }
 
+// Fetches the feature flags from the api using the provided flags key
+// flagsKey (string): You can find the flag key for each stage in your project's settings on happykit.dev.
 func FetchFeatureFlags(flagsKey string) bool {
 	response, err := http.Post(fmt.Sprintf("https://happykit.dev/api/flags/%s", flagsKey), "application/json", bytes.NewReader([]byte("")))
 
