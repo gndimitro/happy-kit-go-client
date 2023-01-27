@@ -14,6 +14,20 @@ type RequestResponseBody struct {
 	Flags FeatureFlags
 }
 
+// A user struct used to pass to the API
+// key (string) (required): Unique key for this user
+// email (string): Email-Address
+// name (string): Full name or nickname
+// avatar (string): URL to users profile picture
+// country (string): Two-letter uppercase country-code, see ISO 3166-1
+type User struct {
+	key string
+	email string
+	name string
+	avatar string
+	country string
+}
+
 var featureFlags FeatureFlags
 
 func IsEnabled(featureFlagKey string, defaultValueOptional ...bool) bool {
