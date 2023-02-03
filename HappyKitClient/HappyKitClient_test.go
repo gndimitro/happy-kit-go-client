@@ -5,11 +5,13 @@ import (
 )
 
 func TestIsEnabled(t *testing.T) {
+	Initialize("123")
 	featureFlagKey := "testKey"
-	featureFlags = map[string]bool {
+	featureFlags := FeatureFlags{
 		featureFlagKey: true,
 	}
-	
+	flagsCache.Set(flagsCacheKey, featureFlags)
+
 	got := IsEnabled(featureFlagKey)
 	want := true
 
@@ -17,16 +19,18 @@ func TestIsEnabled(t *testing.T) {
 		t.Errorf("got %t want %t", got, want)
 	}
 
-	featureFlags = nil
+	flagsCache.Purge()
 }
 
 func TestIsEnabled_WhenDefaultValueIsSet_FlagExists(t *testing.T) {
+	Initialize("123")
 	featureFlagKey := "testKey"
 	defaultValue := true
-	featureFlags = map[string]bool {
+	featureFlags := FeatureFlags{
 		featureFlagKey: false,
 	}
-	
+	flagsCache.Set(flagsCacheKey, featureFlags)
+
 	got := IsEnabled(featureFlagKey, defaultValue)
 	want := false
 
@@ -38,9 +42,10 @@ func TestIsEnabled_WhenDefaultValueIsSet_FlagExists(t *testing.T) {
 }
 
 func TestIsEnabled_WhenDefaultValueIsSet_FlagDoesNotExist(t *testing.T) {
-	featureFlagKey := "testKey"
+	// BROKEN, NEEDS FIXING
+	featureFlagKey := "testKey123"
 	defaultValue := true
-	
+
 	got := IsEnabled(featureFlagKey, defaultValue)
 	want := defaultValue
 
@@ -51,7 +56,7 @@ func TestIsEnabled_WhenDefaultValueIsSet_FlagDoesNotExist(t *testing.T) {
 
 func TestIsEnabled_WhenDefaultValueNotSet_FlagDoesNotExist(t *testing.T) {
 	featureFlagKey := "testKey"
-	
+
 	got := IsEnabled(featureFlagKey)
 	want := false
 
