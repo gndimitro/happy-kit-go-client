@@ -127,33 +127,22 @@ func IsEnabledForUser(featureFlagKey string, user User, defaultValueOptional ...
 	return isEnabled.(bool)
 }
 
-// Fetches the flag value using the provided key for the specified user. Use when your flag value is of any other type supported by HappyKit
+// Fetches the flag value using the provided key for the specified user. Use when your flag value is of any other type supported by HappyKit. This function does not use a cache.
 //
 // featureFlagKey (string) Key to be used when fetching the feature flag
 //
 // defaultValueOptional (interface{}) Backup value to be used in case the feature flag isn't found in the current dataset, by default this is nil
 func GetFlagValueForUser(featureFlagKey string, user User, defaultValueOptional ...interface{}) interface{} {
-	// WIP this functionality is incorrect
 	var defaultValue interface{} = nil
 
 	if len(defaultValueOptional) > 0 {
 		defaultValue = defaultValueOptional[0]
 	}
 
-	storedFlags, err := flagsCache.Get(flagsCacheKey)
-	if err != nil {
-		// Cache miss
-		flags, success := FetchFeatureFlagsForUser(user)
-		if !success {
-			return defaultValue
-		} else {
-			if val, ok := flags[featureFlagKey]; ok {
-				return val
-			}
-		}
+	flags, success := FetchFeatureFlagsForUser(user)
+	if !success {
+		return defaultValue
 	} else {
-		// Cache hit
-		flags := storedFlags.(FeatureFlags)
 		if val, ok := flags[featureFlagKey]; ok {
 			return val
 		}
@@ -219,8 +208,6 @@ func FetchFeatureFlagsForUser(user User) (FeatureFlags, bool) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	flagsCache.Set(flagsCacheKey, requestResponseBody.Flags)
 
 	return requestResponseBody.Flags, true
 }
