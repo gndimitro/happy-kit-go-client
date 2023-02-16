@@ -74,15 +74,19 @@ func IsEnabled(featureFlagKey string, defaultValueOptional ...bool) bool {
 	return isEnabled.(bool)
 }
 
-func GetFlagValue(featureFlagKey string, defaultValueOptional ...bool) interface{} {
-	defaultValue := false
+// Fetches the flag value using the provided key
+//
+// featureFlagKey (string) Key to be used when fetching the feature flag
+//
+// defaultValueOptional (interface{}) Backup value to be used in case the feature flag isn't found in the current dataset, by default this is nil
+func GetFlagValue(featureFlagKey string, defaultValueOptional ...interface{}) interface{} {
+	var defaultValue interface{} = nil
 
 	if len(defaultValueOptional) > 0 {
 		defaultValue = defaultValueOptional[0]
 	}
 
 	storedFlags, err := flagsCache.Get(flagsCacheKey)
-	// // BROKEN, NEEDS FIXING
 	if err != nil {
 		// Cache miss
 		flags, success := FetchFeatureFlags()
@@ -104,7 +108,13 @@ func GetFlagValue(featureFlagKey string, defaultValueOptional ...bool) interface
 	return defaultValue
 }
 
-// Only useable when the flag expected is a boolean type
+// Checks if the flag is enabled for a specified user. Use only when the flag expected is a boolean type
+//
+// featureFlagKey (string) Key to be used when fetching the feature flag
+//
+// user (User) User object to be used in the fetch
+//
+// defaultValueOptional (bool) Backup value to be used in case the feature flag isn't found in the current dataset
 func IsEnabledForUser(featureFlagKey string, user User, defaultValueOptional ...bool) bool {
 	var isEnabled interface{}
 
@@ -117,9 +127,14 @@ func IsEnabledForUser(featureFlagKey string, user User, defaultValueOptional ...
 	return isEnabled.(bool)
 }
 
-// Use when your flag value is of any other type supported by HappyKit
-func GetFlagValueForUser(featureFlagKey string, user User, defaultValueOptional ...any) interface{} {
-	var defaultValue any
+// Fetches the flag value using the provided key for the specified user. Use when your flag value is of any other type supported by HappyKit
+//
+// featureFlagKey (string) Key to be used when fetching the feature flag
+//
+// defaultValueOptional (interface{}) Backup value to be used in case the feature flag isn't found in the current dataset, by default this is nil
+func GetFlagValueForUser(featureFlagKey string, user User, defaultValueOptional ...interface{}) interface{} {
+	// WIP this functionality is incorrect
+	var defaultValue interface{} = nil
 
 	if len(defaultValueOptional) > 0 {
 		defaultValue = defaultValueOptional[0]
@@ -170,7 +185,10 @@ func FetchFeatureFlags() (FeatureFlags, bool) {
 		log.Fatal(err)
 	}
 
-	flagsCache.Set(flagsCacheKey, requestResponseBody.Flags)
+	err = flagsCache.Set(flagsCacheKey, requestResponseBody.Flags)
+	if err != nil {
+		fmt.Println("Debug: Failure saving the feature flags to the cache")
+	}
 
 	return requestResponseBody.Flags, true
 }
