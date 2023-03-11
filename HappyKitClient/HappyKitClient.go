@@ -12,9 +12,6 @@ import (
 	"github.com/bluele/gcache"
 )
 
-// TODO: Add fetching by variants
-// TODO: Add an HTTP client so I can test with mocking the API calls
-
 type FeatureFlags map[string]interface{}
 type RequestResponseBody struct {
 	Flags FeatureFlags
@@ -181,7 +178,7 @@ func FetchFeatureFlags() (FeatureFlags, bool) {
 	return requestResponseBody.Flags, true
 }
 
-// Fetches the feature flags from the api without any extra paramaters
+// Fetches the feature flags from the api for the specified user
 func FetchFeatureFlagsForUser(user User) (FeatureFlags, bool) {
 	postBody, err := json.Marshal(user)
 	if err != nil {
