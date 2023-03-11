@@ -1,4 +1,4 @@
-# happy-kit-go-client
+# HappyKit Go Client
 
 ![Test](https://github.com/gndimitro/happykit-go-client/workflows/Test/badge.svg)
 [![GoDoc](https://godoc.org/github.com/gndimitro/happykit-go-client?status.svg)](https://pkg.go.dev/github.com/gndimitro/happykit-go-client?tab=doc)

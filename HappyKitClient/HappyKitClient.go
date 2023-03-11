@@ -12,7 +12,6 @@ import (
 	"github.com/bluele/gcache"
 )
 
-// TODO: Add gcache and implement a cache
 // TODO: Add fetching by variants
 // TODO: Add an HTTP client so I can test with mocking the API calls
 
