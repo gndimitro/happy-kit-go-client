@@ -1,8 +1,8 @@
-name: Test
+name: Tests
 on: [push]
 jobs:
-  test:
-    name: Test
+  tests:
+    name: Tests
     runs-on: ubuntu-latest
     steps:
 
