@@ -1,4 +1,4 @@
-# HappyKit Go Client
+# HappyKit Go Client (WIP)
 
 ![Tests](https://github.com/gndimitro/happykit-go-client/workflows/Tests/badge.svg)
 [![GoDoc](https://godoc.org/github.com/gndimitro/happykit-go-client?status.svg)](https://pkg.go.dev/github.com/gndimitro/happykit-go-client?tab=doc)
@@ -12,9 +12,23 @@ A simple client library that interaces with the HappyKit feature flagging servic
 $ go get github.com/gndimitro/happykit-go-client
 ```
 
-## Quick Start (WIP)
+## Quick Start
 ```go
-// import the library in the main entry of your code
-// call the initialize function
-// call isEnabled where needed
+// 1. Import the library
+// 2. Initialize the client
+// 3. Call isEnabled where needed
+
+import (
+	"fmt"
+
+	"github.com/gndimitro/happykit-go-client/HappyKitClient"
+)
+
+func main() {
+	HappyKitClient.Initialize("flags_pub_development_XXXXXXX")
+
+	if HappyKitClient.IsEnabled("bool") {
+		fmt.Println("Bool is enabled")
+	}
+}
 ```
