@@ -27,8 +27,8 @@ import (
 func main() {
 	HappyKitClient.Initialize("flags_pub_development_XXXXXXX")
 
-	if HappyKitClient.IsEnabled("bool") {
-		fmt.Println("Bool is enabled")
+	if HappyKitClient.IsEnabled("testFlag") {
+		fmt.Println("Flag is enabled")
 	}
 }
 ```
