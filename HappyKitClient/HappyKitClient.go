@@ -30,10 +30,21 @@ type RequestResponseBody struct {
 // country (string): Two-letter uppercase country-code, see ISO 3166-1
 type User struct {
 	Key     string `json:"key"`
-	Email   string `json:"email"`
-	Name    string `json:"name"`
-	Avatar  string `json:"avatar"`
-	Country string `json:"country"`
+	Email   string `json:"email,omitempty"`
+	Name    string `json:"name,omitempty"`
+	Avatar  string `json:"avatar,omitempty"`
+	Country string `json:"country,omitempty"`
+}
+
+type Visitor struct {
+	Key string `json:"key"`
+}
+
+// Request body to be sent to HappyKit for complex flag requests
+type RequestBody struct {
+	User    User        `json:"user,omitempty"`
+	Visitor Visitor     `json:"visitorKey,omitempty"`
+	Traits  interface{} `json:"traits,omitempty"`
 }
 
 var flagsCache gcache.Cache
@@ -196,7 +207,9 @@ func FetchFeatureFlags() (FeatureFlags, bool) {
 
 // Fetches the feature flags from the api for the specified user
 func FetchFeatureFlagsForUser(user User) (FeatureFlags, bool) {
-	postBody, err := json.Marshal(user)
+	requestBody := RequestBody{User: user}
+	postBody, err := json.Marshal(requestBody)
+
 	if err != nil {
 		return nil, false
 	}
