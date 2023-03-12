@@ -60,14 +60,22 @@ func InitializeCustomCacheExpiry(envKey string, expirationTime time.Duration) {
 // defaultValueOptional (bool) Backup value to be used in case the feature flag isn't found in the current dataset
 func IsEnabled(featureFlagKey string, defaultValueOptional ...bool) bool {
 	var isEnabled interface{}
+	var result bool
+	var defaultValue = false
 
 	if len(defaultValueOptional) > 0 {
-		isEnabled = GetFlagValue(featureFlagKey, defaultValueOptional[0])
-	} else {
-		isEnabled = GetFlagValue(featureFlagKey, false)
+		defaultValue = defaultValueOptional[0]
 	}
 
-	return isEnabled.(bool)
+	isEnabled = GetFlagValue(featureFlagKey, defaultValue)
+
+	result, ok := isEnabled.(bool)
+	if !ok {
+		fmt.Println("Flag failed casting to bool, verify the flag is a boolean type")
+		return defaultValue
+	}
+
+	return result
 }
 
 // Fetches the flag value using the provided key
@@ -113,14 +121,22 @@ func GetFlagValue(featureFlagKey string, defaultValueOptional ...interface{}) in
 // defaultValueOptional (bool) Backup value to be used in case the feature flag isn't found in the current dataset
 func IsEnabledForUser(featureFlagKey string, user User, defaultValueOptional ...bool) bool {
 	var isEnabled interface{}
+	var result bool
+	var defaultValue = false
 
 	if len(defaultValueOptional) > 0 {
-		isEnabled = GetFlagValueForUser(featureFlagKey, user, defaultValueOptional[0])
-	} else {
-		isEnabled = GetFlagValueForUser(featureFlagKey, user, false)
+		defaultValue = defaultValueOptional[0]
 	}
 
-	return isEnabled.(bool)
+	isEnabled = GetFlagValueForUser(featureFlagKey, user, defaultValue)
+
+	result, ok := isEnabled.(bool)
+	if !ok {
+		fmt.Println("Flag failed casting to bool, verify the flag is a boolean type")
+		return defaultValue
+	}
+
+	return result
 }
 
 // Fetches the flag value using the provided key for the specified user. Use when your flag value is of any other type supported by HappyKit. This function does not use a cache.
