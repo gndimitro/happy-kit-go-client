@@ -21,13 +21,13 @@ $ go get github.com/gndimitro/happykit-go-client
 import (
 	"fmt"
 
-	"github.com/gndimitro/happykit-go-client/HappyKitClient"
+	happyKitClient "github.com/gndimitro/happykit-go-client"
 )
 
 func main() {
-	HappyKitClient.Initialize("flags_pub_development_XXXXXXX")
+	happyKitClient.Initialize("flags_pub_development_XXXXXXX")
 
-	if HappyKitClient.IsEnabled("testFlag") {
+	if happyKitClient.IsEnabled("testFlag") {
 		fmt.Println("Flag is enabled")
 	}
 }
