@@ -209,12 +209,81 @@ func FetchFeatureFlags() (FeatureFlags, bool) {
 // Fetches the feature flags from the api for the specified user
 func FetchFeatureFlagsForUser(user User) (FeatureFlags, bool) {
 	requestBody := RequestBody{User: user}
-	postBody, err := json.Marshal(requestBody)
 
+	postBody, err := json.Marshal(requestBody)
 	if err != nil {
 		return nil, false
 	}
-	response, err := http.Post(fmt.Sprintf("https://happykit.dev/api/flags/%s", environmentKey), "application/json", bytes.NewBuffer(postBody))
+
+	return fetchFlagsWithBody(postBody)
+}
+
+// Checks if the flag is enabled for the specified traits. Use only when the flag expected is a boolean type
+//
+// featureFlagKey (string) Key to be used when fetching the feature flag
+//
+// user (User) User object to be used in the fetch
+//
+// defaultValueOptional (bool) Backup value to be used in case the feature flag isn't found in the current dataset
+func IsEnabledForTraits(featureFlagKey string, traits interface{}, defaultValueOptional ...bool) bool {
+	var isEnabled interface{}
+	var result bool
+	var defaultValue = false
+
+	if len(defaultValueOptional) > 0 {
+		defaultValue = defaultValueOptional[0]
+	}
+
+	isEnabled = GetFlagValueForTraits(featureFlagKey, traits, defaultValue)
+
+	result, ok := isEnabled.(bool)
+	if !ok {
+		fmt.Println("Flag failed casting to bool, verify the flag is a boolean type")
+		return defaultValue
+	}
+
+	return result
+}
+
+// Fetches the flag value using the provided feature flag key for the specified traits. Use when your flag value is of any other type supported by HappyKit. This function does not use a cache.
+//
+// featureFlagKey (string) Key to be used when fetching the feature flag
+//
+// defaultValueOptional (interface{}) Backup value to be used in case the feature flag isn't found in the current dataset, by default this is nil
+func GetFlagValueForTraits(featureFlagKey string, traits interface{}, defaultValueOptional ...interface{}) interface{} {
+	var defaultValue interface{} = nil
+
+	if len(defaultValueOptional) > 0 {
+		defaultValue = defaultValueOptional[0]
+	}
+
+	flags, success := FetchFeatureFlagsForTraits(traits)
+	if !success {
+		return defaultValue
+	} else {
+		if val, ok := flags[featureFlagKey]; ok {
+			return val
+		}
+	}
+
+	return defaultValue
+}
+
+// Fetches flags from the api using the provided traits
+func FetchFeatureFlagsForTraits(traits interface{}) (FeatureFlags, bool) {
+	requestBody := RequestBody{Traits: traits}
+
+	postBody, err := json.Marshal(requestBody)
+	if err != nil {
+		return nil, false
+	}
+
+	return fetchFlagsWithBody(postBody)
+}
+
+// Fetches flags with given body
+func fetchFlagsWithBody(body []byte) (FeatureFlags, bool) {
+	response, err := http.Post(fmt.Sprintf("https://happykit.dev/api/flags/%s", environmentKey), "application/json", bytes.NewBuffer(body))
 
 	if err != nil {
 		fmt.Print(err.Error())
