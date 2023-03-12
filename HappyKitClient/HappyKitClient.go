@@ -59,6 +59,7 @@ func Initialize(envKey string) {
 	InitializeCustomCacheExpiry(envKey, time.Minute/2)
 }
 
+// Initialze function to set and store the environment key for all future calls to HappyKit with a custom cache expiration time
 func InitializeCustomCacheExpiry(envKey string, expirationTime time.Duration) {
 	environmentKey = envKey
 	flagsCache = gcache.New(1).Expiration(expirationTime).Build()
