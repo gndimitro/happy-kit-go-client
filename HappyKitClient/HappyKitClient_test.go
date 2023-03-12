@@ -65,3 +65,41 @@ func TestIsEnabled_WhenDefaultValueNotSet_FlagDoesNotExist(t *testing.T) {
 		t.Errorf("got %t want %t", got, want)
 	}
 }
+
+func TestIsEnabled_WhenBadNonBooleanFlagUsed_DefaultValueReturned(t *testing.T) {
+	Initialize("123")
+	flagKey := "testKey"
+	flagValue := "true"
+	featureFlags := FeatureFlags{
+		flagKey: flagValue,
+	}
+	flagsCache.Set(flagsCacheKey, featureFlags)
+
+	got := IsEnabled(flagKey)
+	want := false
+
+	if got != want {
+		t.Errorf("got %t want %t", got, want)
+	}
+
+	flagsCache.Purge()
+}
+
+func TestIsEnabled_WhenBadNonBooleanFlagUsed_GivenDefaultValueReturned(t *testing.T) {
+	Initialize("123")
+	flagKey := "testKey"
+	flagValue := "true"
+	featureFlags := FeatureFlags{
+		flagKey: flagValue,
+	}
+	flagsCache.Set(flagsCacheKey, featureFlags)
+
+	got := IsEnabled(flagKey, true)
+	want := true
+
+	if got != want {
+		t.Errorf("got %t want %t", got, want)
+	}
+
+	flagsCache.Purge()
+}
