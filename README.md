@@ -1,4 +1,4 @@
-# HappyKit Go Client (WIP)
+# HappyKit Go Client (Inactive)
 
 ![Tests](https://github.com/gndimitro/happykit-go-client/workflows/Tests/badge.svg)
 [![GoDoc](https://godoc.org/github.com/gndimitro/happykit-go-client?status.svg)](https://pkg.go.dev/github.com/gndimitro/happykit-go-client?tab=doc)
